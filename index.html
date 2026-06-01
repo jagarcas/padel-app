@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Partidos de Pádel</title>
+</head>
+<body>
+
+<h1>Partidos de Pádel</h1>
+
+<h2>Crear partido</h2>
+<form id="form">
+  Fecha: <input type="date" id="fecha" required><br><br>
+  Hora: <input type="time" id="hora" required><br><br>
+  Jugadores: <input type="text" id="jugadores" placeholder="Ej: Juan, Pedro" required><br><br>
+  <button type="submit">Guardar</button>
+</form>
+
+<h2>Lista de partidos</h2>
+<ul id="lista"></ul>
+
+<script>
+let partidos = JSON.parse(localStorage.getItem("partidos")) || [];
+
+function mostrarPartidos() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  partidos.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `${p.fecha} - ${p.hora} | ${p.jugadores}`;
+    lista.appendChild(li);
+  });
+}
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const partido = {
+    fecha: document.getElementById("fecha").value,
+    hora: document.getElementById("hora").value,
+    jugadores: document.getElementById("jugadores").value
+  };
+
+  partidos.push(partido);
+  localStorage.setItem("partidos", JSON.stringify(partidos));
+
+  mostrarPartidos();
+});
+
+mostrarPartidos();
+</script>
+
+</body>
+</html>
