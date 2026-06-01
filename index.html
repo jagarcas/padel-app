@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html>
 <head>
   <title>Partidos de Pádel</title>
@@ -12,44 +12,63 @@
 <form id="form">
   Fecha: <input type="date" id="fecha" required><br><br>
   Hora: <input type="time" id="hora" required><br><br>
-  Jugadores: <input type="text" id="jugadores" required><br><br>
+
+  <h3>Pareja A</h3>
+  Jugador 1: <input type="text" id="jugadorA1" required><br><br>
+  Jugador 2: <input type="text" id="jugadorA2" required><br><br>
+
+  <h3>Pareja B</h3>
+  Jugador 1: <input type="text" id="jugadorB1" required><br><br>
+  Jugador 2: <input type="text" id="jugadorB2" required><br><br>
+
+  Resultado (Ej: 6-4): 
+  <input type="text" id="resultado" placeholder="6-4" required><br><br>
+
   <button type="submit">Guardar</button>
 </form>
 
 <h2>Lista de partidos</h2>
 <ul id="lista"></ul>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Configuración Firebase
+// Config Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBCX8U5bj1Uce-SEnJzLukF3803vTYt1tg",
-  authDomain: "padel-app-dd2c6.firebaseapp.com",
-  projectId: "padel-app-dd2c6",
-  storageBucket: "padel-app-dd2c6.firebasestorage.app",
-  messagingSenderId: "540909343909",
-  appId: "1:540909343909:web:bb12b4cd4b8c699a8da94c"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH_DOMAIN",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_STORAGE_BUCKET",
+  messagingSenderId: "TU_SENDER_ID",
+  appId: "TU_APP_ID"
 };
 
-// Inicializar Firebase
+// Inicializar
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Referencia a colección
+// Colección
 const partidosRef = collection(db, "partidos");
 
-// Escuchar cambios en tiempo real
+// Escuchar cambios
 onSnapshot(partidosRef, (snapshot) => {
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
 
   snapshot.forEach((doc) => {
     const p = doc.data();
+
     const li = document.createElement("li");
-    li.textContent = `${p.fecha} - ${p.hora} | ${p.jugadores}`;
+
+    li.innerHTML = `
+      <strong>${p.fecha} ${p.hora}</strong><br>
+      🅰️ ${p.jugadorA1} / ${p.jugadorA2}<br>
+      🅱️ ${p.jugadorB1} / ${p.jugadorB2}<br>
+      🏆 Resultado: ${p.resultado}
+      <hr>
+    `;
+
     lista.appendChild(li);
   });
 });
@@ -59,14 +78,3 @@ document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const partido = {
-    fecha: document.getElementById("fecha").value,
-    hora: document.getElementById("hora").value,
-    jugadores: document.getElementById("jugadores").value
-  };
-
-  await addDoc(partidosRef, partido);
-});
-</script>
-
-</body>
-</html>
